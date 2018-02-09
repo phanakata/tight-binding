@@ -13,8 +13,11 @@ class Lattice:
         -------------------
         a1, a2, a3 : list of float 
             lattice vectors
-        
         -------------------
+        Examples:
+        2D square lattice
+        a1 = [1, 0, 0]
+        a2 = [0, 1, 0]
         """
         
         
@@ -30,10 +33,13 @@ class Lattice:
         else:
             self.a3 = None
         
+        #number of dimensions
         self.NDIM = 3
+
         #start with empty sublattices
         self.sublattices =[]
         
+        #atomic positions will be saved in numpy array
         self.positions = np.zeros((0))
         
         
@@ -100,18 +106,9 @@ class Lattice:
             
             self.sublattices.append((name, position, energy))
             
-            #we will do lot of array manipulation we need numpy for better performance, 
+            #We will do extensive array manipulations we need numpy for better performance, 
             #save positions as numpy 
             
             self.positions[line] = position
             
             
-            #first go to line and change it into 
-            #['atom type', '[fraction_x, fraction_y, fraction_z]',]
-            
-            
-    #def getPosition():
-        
-            
-        
-        
