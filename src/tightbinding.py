@@ -55,8 +55,6 @@ class TightBinding(Lattice):
         
         for i in range(self.N):
             self.nlist.append([])
-        
-        pbc = False     
     
         for i in range(self.N):
             time.sleep(0.1)
@@ -66,7 +64,7 @@ class TightBinding(Lattice):
             
                 xi = self.lattice.positions[i]
                 xj = self.lattice.positions[j]
-                if pbc is True:
+                if self.lattice.pbc is True:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
                         self.nlist[i].append(j)
                     else:
@@ -103,7 +101,7 @@ class TightBinding(Lattice):
         if  rij2 <cut*cut:
             return t * (d_cc/math.sqrt(rij2))**3
         else:
-            if pbc is True:
+            if self.lattice.pbc is True:
                 if abs(xj[0]-xi[0])>Lx/2:
                     xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
                 if abs(xj[1]-xi[1])>Ly/2:

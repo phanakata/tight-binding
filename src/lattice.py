@@ -5,7 +5,7 @@ class Lattice:
     This class returns primitive unit cell (or supercell)        
     """
     
-    def __init__ (self, a1, a2=None, a3=None):
+    def __init__ (self, a1, a2=None, a3=None, pbc=None):
         """ 
         Construct a lattice object
         
@@ -33,6 +33,8 @@ class Lattice:
         else:
             self.a3 = None
         
+        self.pbc = pbc
+
         #number of dimensions
         self.NDIM = 3
 
