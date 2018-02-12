@@ -23,23 +23,27 @@ class Lattice:
         
         if a1 != None:
             self.a1 = a1
+        
         if a2 != None:
             self.a2 = a2
         else:
-            self.a2 = None
+            self.a2 = None 
             
         if a3 != None:
-            self.a3 = a3
+            self.a3 = a3  
         else:
             self.a3 = None
         
-        self.pbc = pbc
+        if pbc != None:
+            self.pbc = False #if not specified assume non periodic boundary condition
+        else:
+            self.pbc = pbc
 
         #number of dimensions
         self.NDIM = 3
 
         #start with empty sublattices
-        self.sublattices =[]
+        self.sublattices = []
         
         #atomic positions will be saved in numpy array
         self.positions = np.zeros((0))
