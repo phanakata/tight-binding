@@ -57,7 +57,6 @@ class TightBinding(Lattice):
             self.nlist.append([])
         
         pbc = False     
-        cut = 1.5
     
         for i in range(self.N):
             time.sleep(0.1)
@@ -96,26 +95,26 @@ class TightBinding(Lattice):
     @staticmethod    
     def tij(xi, xj):
         """Helper function to calculate tij
-        Form simplicity tij is assumed to be proportional to 1/r^3
-        Different functionals can may considered 
+        Form simplicity tij is assumed to be proportional to 1/r^3 Harrison's rule
+        Different functionals may be considered 
         """
-        ax = 1.42
-        t = 1. # coupling strength
-        #if it's only 2 unit distance away then don't waste time doing image calculation
-        r_scaled = ax/math.sqrt(self.distance2(xj, xi))
-        if  1/r_scaled <cut:
-            return t/(r_scaled*r_scaled*r_scaled)
+        
+        rij2 = self.distance2(xj, xi)
+        if  rij2 <cut*cut:
+            return t * (d_cc/math.sqrt(rij2))**3
         else:
             if pbc is True:
                 if abs(xj[0]-xi[0])>Lx/2:
                     xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
                 if abs(xj[1]-xi[1])>Ly/2:
                     xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
-            
-                r_scaled = ax/math.sqrt(self.distance2(xj, xi))
-                if  1/r_scaled <cut:
-                    return t/(r_scaled*r_scaled*r_scaled)
                 
+                rij2 = self.distance2(xj, xi)
+                if  rij2 <cut*cut:
+                    return t * (d_cc/math.sqrt(rij2))**3
+
+
+
     @staticmethod            
     def distance2(xj, xi):
         """Helper function to calculate squared distance"""
