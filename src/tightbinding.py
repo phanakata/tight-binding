@@ -31,7 +31,7 @@ class TightBinding(Lattice):
         2. Construct Hamiltonian
         """
        
-        self.findNeighbors()
+        self.findNearestNeighbors()
         self.hamiltonian()
         print("..ALL jobs are DONE!!..")
     
@@ -51,13 +51,15 @@ class TightBinding(Lattice):
             neighborList = len(self.nlist[i])
             for neighbor in range(neighborList):
                 #Hij
-                self.H[i][self.nlist[i][neighbor]]=self.tij(self.lattice.positions[i], self.lattice.positions[self.nlist[i][neighbor]])
+                self.H[i][self.nlist[i][neighbor]]=self.tij_nn(self.lattice.positions[i], self.lattice.positions[self.nlist[i][neighbor]])
         
         self.update_progress("Constructing Hamiltonian", 1) 
     
-    def findNeighbors(self):
+    def findNearestNeighbors(self):
         """Function to find (nearest) neighbor(s)"""
         
+        cut = self.lattice.parameters[0][2]
+
         for i in range(self.N):
             self.nlist.append([])
     
@@ -96,12 +98,17 @@ class TightBinding(Lattice):
     
           
     @staticmethod    
-    def tij(xi, xj):
-        """Helper function to calculate tij
+    def tij_nn(xi, xj):
+        """Helper function to calculate NEAREST NEIGHBOR tij 
         Form simplicity tij is assumed to be proportional to 1/r^3 Harrison's rule
         Different functionals may be considered 
         """
         
+        #Assign nearest neighbor values, index 0 mean first nearest neighbor
+        d_cc = self.lattice.parameters[0][1]
+        cut = self.lattice.parameters[0][2]
+        t = self.lattice.parameters[0][3]
+
         rij2 = self.distance2(xj, xi)
         if  rij2 <cut*cut:
             return t * (d_cc/math.sqrt(rij2))**3
