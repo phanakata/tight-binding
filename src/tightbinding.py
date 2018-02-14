@@ -105,8 +105,8 @@ class TightBinding(Lattice):
             
         
         self.update_progress("Finding neighbor(s)", 1)
-     
-     def findNearestNeighbors2(self):
+        
+    def findNearestNeighbors2(self):
         """Function to find (nearest) neighbor(s)"""
         
         #to speed caclulation time
