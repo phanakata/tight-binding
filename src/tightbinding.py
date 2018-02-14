@@ -118,7 +118,7 @@ class TightBinding(Lattice):
             self.nlist.append([])
     
         for i in range(self.N):
-            time.sleep(0.1)
+            #time.sleep(0.1)
             self.update_progress("Finding neighbor(s)", i/float(self.N))
             
             xi = self.lattice.positions[i]
