@@ -92,7 +92,6 @@ class Lattice:
         
         """
         
-        #data = np.loadtxt(datafile)
         f = open(datafile)
         data = f.readlines()
         
@@ -116,5 +115,6 @@ class Lattice:
             #save positions as numpy 
             
             self.positions[line] = position
-            
+
+    
             
