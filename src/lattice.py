@@ -115,39 +115,35 @@ class Lattice:
             #save positions as numpy 
             
             self.positions[line] = position
-  
-   
-   def getParametersFromDataFile(self, param_datafile):
-       """
-       Read parameters from a text file
-       Assign parameters such as bond distance, cutoff, and hopping values
-       For more details, see assignParameters method
-       """
+    
+    def getParametersFromDataFile(self, param_datafile):
+        """
+        Read parameters from a text file
+        Assign parameters such as bond distance, cutoff, and hopping values
+        For more details, see assignParameters method
+        """
 
-       f = open(param_datafile)
-       data = f.readlines()
+        f = open(param_datafile)
+        data = f.readlines()
 
-       for line in range(len(data)):
-           oneline = data[line].split()
-           param = [oneline[0], float(oneline[1]), float(oneline[2]), float(oneline[3]), float(oneline[4])]
-           self.parameters.append(param)
+        for line in range(len(data)):
+            oneline = data[line].split()
+            param = [oneline[0], float(oneline[1]), float(oneline[2]), float(oneline[3]), float(oneline[4])]
+            self.parameters.append(param)
 
-   def assignParameters(self, param):
-       """
-       Assign parameters such as bond distance, cutoff, and hopping values 
-       
-       Parameters
-       ----------------
-       interactionType: str 
-       values = list 
-       
-       Example: 
-       Let 'A' be the onsite atom and 'B' is the other atom   
-       lattice.assignParamters(["AB", d_AB, cut_AB, t_AB])
-       
-       Note: in most case interactions are symmetric AB = BA
-
-       """
-       self.parameters.append(param)
+    def assignParameters(self, param):
+        """
+        Assign parameters such as bond distance, cutoff, and hopping values 
+        Parameters
+        ----------------
+        interactionType: str 
+        values = list 
+        Example: 
+        Let 'A' be the onsite atom and 'B' is the other atom   
+        lattice.assignParamters(["AB", d_AB, cut_AB, t_AB])
+        
+        Note: in most case interactions are symmetric AB = BA
+        """
+        self.parameters.append(param)
 
             
