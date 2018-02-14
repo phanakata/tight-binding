@@ -78,17 +78,17 @@ class TightBinding(Lattice):
             #time.sleep(0.1)
             self.update_progress("Finding neighbor(s)", i/float(self.N))
             
-            count_nearest = 0 
             xi = self.lattice.positions[i]
             j = 0
-            while j<self.N and count_nearest<nearestMax:
+            while j<self.N and len(self.nlist[i])<nearestMax:
                 
                 xj = self.lattice.positions[j]
                 
                 if self.lattice.pbc is False:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
                         self.nlist[i].append(j)
-                        count_nearest = count_nearest+1
+                        #this also means i is nearest for jth
+                        self.nlist[j].append(i)
                 
                 elif self.lattice.pbc is True:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
