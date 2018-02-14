@@ -2,6 +2,8 @@ from lattice import Lattice
 import math 
 import numpy as np
 import time, sys
+from time import time
+
 
 """Tight binding class
 This class is used to model electronic systems based on their atomic positions and their interactions. 
@@ -30,8 +32,14 @@ class TightBinding(Lattice):
         1. Find neighbor(s) 
         2. Construct Hamiltonian
         """
-       
+        t0 = time()
+        self.findNearestNeighbors2()
+        print ("find NearestNeighbors2 time:", round(time()-t0, 3), "s")
+        
+        t1 = time()
         self.findNearestNeighbors()
+        print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
+
         self.hamiltonian()
         print("..ALL jobs are DONE!!..")
     
@@ -58,6 +66,9 @@ class TightBinding(Lattice):
     def findNearestNeighbors(self):
         """Function to find (nearest) neighbor(s)"""
         
+        #to speed caclulation time
+        #go to next loop whne nnearest = 3
+        nearestMax = 3 
         cut = self.lattice.parameters[0][2]
 
         for i in range(self.N):
@@ -66,12 +77,19 @@ class TightBinding(Lattice):
         for i in range(self.N):
             time.sleep(0.1)
             self.update_progress("Finding neighbor(s)", i/float(self.N))
-            for j in range(self.N):
-           
             
-                xi = self.lattice.positions[i]
+            count_nearest = 0 
+            xi = self.lattice.positions[i]
+            while j<self.N and count_nearest<nearestMax:
+                
                 xj = self.lattice.positions[j]
-                if self.lattice.pbc is True:
+                
+                if self.lattice.pbc is False:
+                    if self.distance2(xj, xi)<cut*cut and i !=j:
+                        self.nlist[i].append(j)
+                        count_nearest = count_nearest+1
+                
+                elif self.lattice.pbc is True:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
                         self.nlist[i].append(j)
                     else:
@@ -84,14 +102,51 @@ class TightBinding(Lattice):
                         if self.distance2(xj, xi)<cut*cut and i !=j:
                             self.nlist[i].append(j)
                 
-                else:
-                    if self.distance2(xj, xi)<cut*cut and i !=j:
-                        self.nlist[i].append(j)
-            
             
         
         self.update_progress("Finding neighbor(s)", 1)
+     
+     def findNearestNeighbors2(self):
+        """Function to find (nearest) neighbor(s)"""
+        
+        #to speed caclulation time
+        #go to next loop whne nnearest = 3
+        nearestMax = 3 
+        cut = self.lattice.parameters[0][2]
+
+        for i in range(self.N):
+            self.nlist.append([])
+    
+        for i in range(self.N):
+            time.sleep(0.1)
+            self.update_progress("Finding neighbor(s)", i/float(self.N))
+            
+            xi = self.lattice.positions[i]
+            for j in range(self.N):
                 
+                xj = self.lattice.positions[j]
+                
+                if self.lattice.pbc is False:
+                    if self.distance2(xj, xi)<cut*cut and i !=j:
+                        self.nlist[i].append(j)
+                        #count_nearest = count_nearest+1
+                
+                elif self.lattice.pbc is True:
+                    if self.distance2(xj, xi)<cut*cut and i !=j:
+                        self.nlist[i].append(j)
+                    else:
+                        if abs(xi[0]-xj[0])>Lx/2:
+                            xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
+                
+                        if abs(xi[1]-xj[1])>Ly/2:
+                            xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
+                
+                        if self.distance2(xj, xi)<cut*cut and i !=j:
+                            self.nlist[i].append(j)
+                
+            
+        
+        self.update_progress("Finding neighbor(s)", 1)
             
         
     
