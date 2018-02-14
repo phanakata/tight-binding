@@ -129,7 +129,7 @@ class Lattice:
 
        for line in range(len(data)):
            oneline = data[line].split()
-           param = [oneline[0], float(oneline[1]), float(oneline[2]), float(oneline[3])]
+           param = [oneline[0], float(oneline[1]), float(oneline[2]), float(oneline[3]), float(oneline[4])]
            self.parameters.append(param)
 
    def assignParameters(self, param):
