@@ -1,7 +1,7 @@
 from lattice import Lattice
 import math 
 import numpy as np
-import time, sys
+import sys #,time
 from time import time
 
 
@@ -50,7 +50,7 @@ class TightBinding(Lattice):
         """Function to construct Hamiltonian"""
         for i in range(self.N):
             
-            time.sleep(0.1)
+            #time.sleep(0.1)
             self.update_progress("Constructing Hamiltonian", i/float(self.N))
             
             #onsite energy
@@ -75,7 +75,7 @@ class TightBinding(Lattice):
             self.nlist.append([])
     
         for i in range(self.N):
-            time.sleep(0.1)
+            #time.sleep(0.1)
             self.update_progress("Finding neighbor(s)", i/float(self.N))
             
             count_nearest = 0 
@@ -200,6 +200,3 @@ class TightBinding(Lattice):
         sys.stdout.flush()
     
  
-                
-            
-        
