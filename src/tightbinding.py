@@ -46,7 +46,7 @@ class TightBinding(Lattice):
             self.update_progress("Constructing Hamiltonian", i/float(self.N))
             
             #onsite energy
-            H[i][i] = self.lattice.sublattices[i][2]
+            self.H[i][i] = self.lattice.sublattices[i][2]
 
             neighborList = len(self.nlist[i])
             for neighbor in range(neighborList):
