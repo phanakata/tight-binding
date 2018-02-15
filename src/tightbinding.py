@@ -90,8 +90,8 @@ class TightBinding(Lattice):
         cut = []
         
         #append nearest neighbor cut(s) parameters
-        for n in range(len(self.lattice.parameters)):
-            cut.append(self.lattice.parameters[i][2])
+        for nn in range(len(self.lattice.parameters)):
+            cut.append(self.lattice.parameters[nn][2])
 
         for i in range(self.N):
             self.nlist.append([])
