@@ -10,9 +10,13 @@ cd QC-gefyra
 ```
 Try to run an example
 ```
-cd example/
+cd examples/
 ```
-
-
+README.md contains descriptions for each example. 
+It is recommended to first try using the code for calculating DOS of a flat graphene. 
+```
+cd graphene_from_experimental_or_MD_data
+``` 
+The Python notebook contains example how to use the package and explanations about the input parameters. 
 ## Authors
 Paul Hanakata
