@@ -165,7 +165,7 @@ class TightBinding(Lattice):
                 xj = self.lattice.positions[j]
                 #nearest neighbor index
                 
-                if i !=j and j not in self.nlist[i]:
+                if i !=j and j not in self.nlist_np[i]:
                     if self.lattice.pbc is False:
                         if self.distance2(xj, xi)<cut[nn]*cut[nn]:
                             self.nlist_np[i][nn] = j 
