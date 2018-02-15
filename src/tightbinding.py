@@ -237,6 +237,7 @@ class TightBinding(Lattice):
                 #dz = xj[2] - xi[2] 
                 if self.lattice.pbc is False:
                     if i==j or abs(xj[0] - xi[0]) > cut or abs(xj[1] - xi[1])>cut or abs(xj[2] - xi[2])>cut:
+                        j = j + 1
                         continue 
                     elif self.distance2(xj, xi)<cut[nn]*cut[nn] and nn<len(cut):
                         self.nlist_np[i][nn] = j 
