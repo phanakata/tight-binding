@@ -49,10 +49,13 @@ class TightBinding(Lattice):
         t1 = time()
         self.findNearestNeighbors_z()
         print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
-
+        
+        self.nlist= []
         t1 = time()
         self.findNearestNeighbors()
         print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
+        
+        
         
         #t1 = time()
         #self.findNearestNeighbors_np()
