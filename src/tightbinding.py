@@ -36,14 +36,33 @@ class TightBinding(Lattice):
         self.findNearestNeighbors2()
         print ("find NearestNeighbors2 time:", round(time()-t0, 3), "s")
         
-        t1 = time()
-        self.findNearestNeighbors()
-        print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
-
         self.hamiltonian()
         print("..ALL jobs are DONE!!..")
     
     
+    def benchmarkAlgo(self):
+        """
+        For development
+        Method to time and benchmark differenrt algo 
+        """
+        
+        t1 = time()
+        self.findNearestNeighbors()
+        print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
+        
+        print(self.nlist)
+        
+        self.nlist= []
+        
+        t0 = time()
+        self.findNearestNeighbors2()
+        print ("find NearestNeighbors2 time:", round(time()-t0, 3), "s")
+        
+  
+      
+
+
+
     
     #Helper functions
     def hamiltonian(self):
@@ -68,8 +87,11 @@ class TightBinding(Lattice):
         
         #to speed caclulation time
         #go to next loop whne nnearest = 3
-        nearestMax = 3 
-        cut = self.lattice.parameters[0][2]
+        cut = []
+        
+        #append nearest neighbor cut(s) parameters
+        for n in range(len(self.lattice.parameters)):
+            cut.append(self.lattice.parameters[i][2])
 
         for i in range(self.N):
             self.nlist.append([])
@@ -80,29 +102,34 @@ class TightBinding(Lattice):
             
             xi = self.lattice.positions[i]
             j = 0
-            while j<self.N and len(self.nlist[i])<nearestMax:
+            while j<self.N and len(self.nlist[i])<len(cut):
                 
                 xj = self.lattice.positions[j]
+                nn = len(self.nlist[i])   #nearest neighbor index
                 
-                if self.lattice.pbc is False:
-                    if self.distance2(xj, xi)<cut*cut and i !=j:
-                        self.nlist[i].append(j)
-                        #this also means i is nearest for jth
-                        self.nlist[j].append(i)
-                
-                elif self.lattice.pbc is True:
-                    if self.distance2(xj, xi)<cut*cut and i !=j:
-                        self.nlist[i].append(j)
-                    else:
-                        if abs(xi[0]-xj[0])>Lx/2:
-                            xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
-                
-                        if abs(xi[1]-xj[1])>Ly/2:
-                            xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
-                
-                        if self.distance2(xj, xi)<cut*cut and i !=j:
+                if i !=j and j not in self.nlist[i]:
+                    if self.lattice.pbc is False:
+                        if self.distance2(xj, xi)<cut[nn]*cut[nn]:
                             self.nlist[i].append(j)
+                            #this also means i is nearest for jth
+                            self.nlist[j].append(i)
+                    elif self.lattice.pbc is True:
+                        if self.distance2(xj, xi)<cut[nn]*cut[nn]:
+                            self.nlist[i].append(j)
+                            self.nlist[j].append(i)
+                        else:
+                            #pbc image
+                            if abs(xi[0]-xj[0])>Lx/2:
+                                xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
+                            if abs(xi[1]-xj[1])>Ly/2:
+                                xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
+                            
+                            if self.distance2(xj, xi)<cut[nn]*cut[nn]:
+                                self.nlist[i].append(j)
+                                self.nlist[j].append(i)
+                                
                 j = j +1  
+        
         self.update_progress("Finding neighbor(s)", 1)
         
     def findNearestNeighbors2(self):
@@ -110,14 +137,14 @@ class TightBinding(Lattice):
         
         #to speed caclulation time
         #go to next loop whne nnearest = 3
-        nearestMax = 3 
-        cut = self.lattice.parameters[0][2]
+        #nearestMax = 3 
 
+        cut = self.lattice.parameters[0][2]
+        
         for i in range(self.N):
             self.nlist.append([])
     
         for i in range(self.N):
-            #time.sleep(0.1)
             self.update_progress("Finding neighbor(s)", i/float(self.N))
             
             xi = self.lattice.positions[i]
@@ -128,7 +155,6 @@ class TightBinding(Lattice):
                 if self.lattice.pbc is False:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
                         self.nlist[i].append(j)
-                        #count_nearest = count_nearest+1
                 
                 elif self.lattice.pbc is True:
                     if self.distance2(xj, xi)<cut*cut and i !=j:
