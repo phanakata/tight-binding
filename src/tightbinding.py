@@ -232,9 +232,12 @@ class TightBinding(Lattice):
                 xj = self.lattice.positions[j]
                 #nearest neighbor index
 
-                #dx = xj[0] - xi[0]
-                #dy = xj[1] - xi[1]
-                #dz = xj[2] - xi[2] 
+                dx = xj[0] - xi[0]
+                dy = xj[1] - xi[1]
+                dz = xj[2] - xi[2] 
+                
+                sDistance = dx*dx + dy*dy +dz*dz
+                
                 if self.lattice.pbc is False:
                     #list1 = [] 
                     
@@ -255,12 +258,12 @@ class TightBinding(Lattice):
                     if i==j or (abs(xj[0] - xi[0]) > cut[nn]) or (abs(xj[1] - xi[1])>cut[nn]) or (abs(xj[2] - xi[2])>cut[nn]):
                         j = j + 1
                         continue 
-                    elif self.distance2(xj, xi)<cut[nn]*cut[nn] and nn<len(cut):
+                    elif sDistance<cut[nn]*cut[nn] and nn<len(cut):
                         self.nlist_np[i][nn] = j 
                         nn = nn + 1
 
                 elif self.lattice.pbc is True:
-                    if self.distance2(xj, xi)<cut[nn]*cut[nn]:
+                    if sDistance<cut[nn]*cut[nn]:
                         self.nlist_np[i][nn] = j
                         #this also means i is nearest for jth
                         self.nlist_np[j][nn] = i
@@ -272,7 +275,7 @@ class TightBinding(Lattice):
                         if abs(xi[1]-xj[1])>Ly/2:
                             xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
                             
-                        if self.distance2(xj, xi)<cut[nn]*cut[nn]:
+                        if sDistance<cut[nn]*cut[nn]:
                             self.nlist_np[i][nn] = j 
                             #this also means i is nearest for jth
                             self.nlist_np[j][nn] = i
