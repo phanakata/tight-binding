@@ -52,7 +52,7 @@ class TightBinding(Lattice):
         
         self.nlist= []
         t1 = time()
-        self.findNearestNeighbors()
+        self.findNearestNeighbors_o()
         print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
         
         
@@ -133,7 +133,7 @@ class TightBinding(Lattice):
                         self.nlist[i] = j
                         #this also means i is nearest for jth
                         self.nlist[j] = i
-                         nn = len(self.nlist[i])
+                        nn = len(self.nlist[i])
                     else:
                         #pbc image
                         if abs(xi[0]-xj[0])>Lx/2:
