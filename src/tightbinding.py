@@ -97,6 +97,70 @@ class TightBinding(Lattice):
         
         self.update_progress("Constructing Hamiltonian", 1) 
     
+    def findNearestNeighbors_o(self):
+        """Function to find (nearest) neighbor(s)"""
+        
+        #to speed caclulation time
+        #go to next loop whne nnearest = 3
+        cut = []
+        
+        #append nearest neighbor cut(s) parameters
+        for nn in range(len(self.lattice.parameters)):
+            cut.append(self.lattice.parameters[nn][2])
+
+        for i in range(self.N):
+            self.nlist.append([])
+    
+        for i in range(self.N):
+            self.update_progress("Finding neighbor(s)", i/float(self.N))
+            
+            xi = self.lattice.positions[i]
+            j = 0
+            nn = len(self.nlist[i])
+            
+            while j<len(self.N) and nn < len(cut):
+                if self.lattice.pbc is False:
+                    if i==j or (abs(xj[0] - xi[0]) > cut[nn]) or (abs(xj[1] - xi[1])>cut[nn]) or (abs(xj[2] - xi[2])>cut[nn]):
+                        j = j + 1
+                        continue 
+                    elif ((xj[0] - xi[0])*(xj[0] - xi[0])+(xj[1] - xi[1])*(xj[1] - xi[1])+(xj[2] - xi[2])*(xj[2] - xi[2]))<cut[nn]*cut[nn] and nn<len(cut):
+                        self.nlist[i].append(j) 
+                        self.nlist[j].append(i)
+                        nn = len(self.nlist[i])
+
+                elif self.lattice.pbc is True:
+                    if (xj[0] - xi[0])*(xj[0] - xi[0])+(xj[1] - xi[1])*(xj[1] - xi[1])+(xj[2] - xi[2])*(xj[2] - xi[2])<cut[nn]*cut[nn]:
+                        self.nlist[i] = j
+                        #this also means i is nearest for jth
+                        self.nlist[j] = i
+                         nn = len(self.nlist[i])
+                    else:
+                        #pbc image
+                        if abs(xi[0]-xj[0])>Lx/2:
+                            xj[0] = xj[0] - Lx * (xj[0]-xi[0])/abs(xj[0]-xi[0])
+                        if abs(xi[1]-xj[1])>Ly/2:
+                            xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
+                            
+                        if (xj[0] - xi[0])*(xj[0] - xi[0])+(xj[1] - xi[1])*(xj[1] - xi[1])+(xj[2] - xi[2])*(xj[2] - xi[2])<cut[nn]*cut[nn]:
+                            self.nlist[i]= j 
+                            #this also means i is nearest for jth
+                            self.nlist[j]= i
+                            nn = len(self.nlist[i])
+                                
+                                
+                j = j +1  
+            
+        
+        self.update_progress("Finding neighbor(s)", 1)
+    
+    
+    
+    
+    
+    
+    
+    
+    
     def findNearestNeighbors(self):
         """Function to find (nearest) neighbor(s)"""
         
