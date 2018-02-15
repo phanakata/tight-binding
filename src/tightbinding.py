@@ -118,7 +118,7 @@ class TightBinding(Lattice):
             j = 0
             nn = len(self.nlist[i])
             
-            while j<len(self.N) and nn < len(cut):
+            while j<self.N and nn < len(cut):
                 if self.lattice.pbc is False:
                     if i==j or (abs(xj[0] - xi[0]) > cut[nn]) or (abs(xj[1] - xi[1])>cut[nn]) or (abs(xj[2] - xi[2])>cut[nn]):
                         j = j + 1
