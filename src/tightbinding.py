@@ -240,7 +240,7 @@ class TightBinding(Lattice):
                     list1.append(abs(xj[0] - xi[0]))
                     list1.append(abs(xj[1] - xi[1]))
                     list1.append(abs(xj[2] - xi[2]))
-                    check  = any[d>cut for d in list1]
+                    check  = any([d>cut for d in list1])
                     #(abs(xj[0] - xi[0]) > cut) or (abs(xj[1] - xi[1])>cut) or (abs(xj[2] - xi[2])>cut)
                                         
                     if i==j or check:
