@@ -236,14 +236,14 @@ class TightBinding(Lattice):
                 #dy = xj[1] - xi[1]
                 #dz = xj[2] - xi[2] 
                 if self.lattice.pbc is False:
-                    #list1 = [] 
-                    #list1.append(abs(xj[0] - xi[0]))
-                    #list1.append(abs(xj[1] - xi[1]))
-                    #list1.append(abs(xj[2] - xi[2]))
-                    #check  = any[d>cut for d in list1]
-                    
-                    
-                    if i==j or (abs(xj[0] - xi[0]) > cut) or (abs(xj[1] - xi[1])>cut) or (abs(xj[2] - xi[2])>cut):
+                    list1 = [] 
+                    list1.append(abs(xj[0] - xi[0]))
+                    list1.append(abs(xj[1] - xi[1]))
+                    list1.append(abs(xj[2] - xi[2]))
+                    check  = any[d>cut for d in list1]
+                    #(abs(xj[0] - xi[0]) > cut) or (abs(xj[1] - xi[1])>cut) or (abs(xj[2] - xi[2])>cut)
+                                        
+                    if i==j or check:
                         j = j + 1
                         continue 
                     elif self.distance2(xj, xi)<cut[nn]*cut[nn] and nn<len(cut):
