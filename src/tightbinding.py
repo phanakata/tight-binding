@@ -3,6 +3,7 @@ import math
 import numpy as np
 import sys #,time
 from time import time
+from numpy import linalg as LA
 
 
 """Tight binding class
@@ -34,9 +35,12 @@ class TightBinding(Lattice):
         """
         t0 = time()
         self.findNearestNeighbors2()
-        print ("find NearestNeighbors2 time:", round(time()-t0, 3), "s")
+        print ("find NearestNeighbors time:", round(time()-t0, 3), "s")
         
+        t0 = time()
         self.hamiltonian()
+        print ("construct Hamiltonian time:", round(time()-t0, 3), "s")
+        
         print("..ALL jobs are DONE!!..")
     
     
@@ -52,56 +56,41 @@ class TightBinding(Lattice):
         
         self.nlist= []
         t1 = time()
-        self.findNearestNeighbors_o()
+        self.findNearestNeighbors()
         print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
         
-        
-        
-        #t1 = time()
-        #self.findNearestNeighbors_np()
-        #print ("find NearestNeighbors_np time:", round(time()-t1, 3), "s")
-        
-        
-        #t1 = time()
-        #self.findNearestNeighbors()
-        #print ("find NearestNeighbors time:", round(time()-t1, 3), "s")
-        
-        #print(self.nlist)
-        
-        self.nlist= []
-        t0 = time()
-        self.findNearestNeighbors2()
-        print ("find NearestNeighbors2 time:", round(time()-t0, 3), "s")
-        
-  
-      
-
-
-
     
     #Helper functions
     def hamiltonian(self):
         """Function to construct Hamiltonian"""
         for i in range(self.N):
-            
-            #time.sleep(0.1)
             self.update_progress("Constructing Hamiltonian", i/float(self.N))
             
             #onsite energy
             self.H[i][i] = self.lattice.sublattices[i][2]
-
+            
+            neighbor = 0
             neighborList = len(self.nlist[i])
             for neighbor in range(neighborList):
                 #Hij
                 self.H[i][self.nlist[i][neighbor]]=self.tij_nn(self.lattice.positions[i], self.lattice.positions[self.nlist[i][neighbor]])
         
         self.update_progress("Constructing Hamiltonian", 1) 
-    
-    def findNearestNeighbors_o(self):
-        """Function to find (nearest) neighbor(s)"""
         
+        
+    def solve(self):
+        """Find eigen energies and eigen vectors"""
+        
+        self.evalues, self.evectors = LA.eig(self.H)
+        
+        
+        
+    
+    def findNearestNeighbors(self):
+        """Function to find (nearest) neighbor(s) [optimized]"""
+        #still under development (there is bug) 
         #to speed caclulation time
-        #go to next loop whne nnearest = 3
+        #go to next loop when nnearest = 3
         cut = []
         
         #append nearest neighbor cut(s) parameters
@@ -118,7 +107,8 @@ class TightBinding(Lattice):
             j = 0
             nn = len(self.nlist[i])
             
-            while j<self.N and nn < len(cut):
+            while j<self.N and (nn < len(cut) and j not in self.nlist[i]):
+                xj = self.lattice.positions[j]
                 if self.lattice.pbc is False:
                     if i==j or (abs(xj[0] - xi[0]) > cut[nn]) or (abs(xj[1] - xi[1])>cut[nn]) or (abs(xj[2] - xi[2])>cut[nn]):
                         j = j + 1
@@ -161,8 +151,8 @@ class TightBinding(Lattice):
     
     
     
-    def findNearestNeighbors(self):
-        """Function to find (nearest) neighbor(s)"""
+    def findNearestNeighbors_u(self):
+        """Function to find (nearest) neighbor(s) [unoptimized]"""
         
         #to speed caclulation time
         #go to next loop whne nnearest = 3
@@ -296,23 +286,7 @@ class TightBinding(Lattice):
             while j<self.N and nn<len(cut):
                 xj = self.lattice.positions[j]
                 #nearest neighbor index
-                if self.lattice.pbc is False:
-                    #list1 = [] 
-                    
-                    #check = False
-                    #if (abs(xj[0] - xi[0])>cut):
-                    #    check = True
-                    #elif (abs(xj[1] - xi[1])>cut):
-                    #    check = True
-                    #elif (abs(xj[2] - xi[2])>cut):
-                    #    check = True
-                    
-                    #list1.append(abs(xj[1] - xi[1]))
-                    #list1.append(abs(xj[2] - xi[2]))
-                    #check  = any([d>cut for d in list1])
-                    #(abs(xj[0] - xi[0]) > cut) or (abs(xj[1] - xi[1])>cut) or (abs(xj[2] - xi[2])>cut)
-
-                                        
+                if self.lattice.pbc is False:                           
                     if i==j or (abs(xj[0] - xi[0]) > cut[nn]) or (abs(xj[1] - xi[1])>cut[nn]) or (abs(xj[2] - xi[2])>cut[nn]):
                         j = j + 1
                         continue 
@@ -347,10 +321,6 @@ class TightBinding(Lattice):
         
     def findNearestNeighbors2(self):
         """Function to find (nearest) neighbor(s)"""
-        
-        #to speed caclulation time
-        #go to next loop whne nnearest = 3
-        #nearestMax = 3 
 
         cut = self.lattice.parameters[0][2]
         
@@ -390,8 +360,7 @@ class TightBinding(Lattice):
     
     
           
-    @staticmethod    
-    def tij_nn(xi, xj):
+    def tij_nn(self, xi, xj):
         """Helper function to calculate NEAREST NEIGHBOR tij 
         Form simplicity tij is assumed to be proportional to 1/r^3 Harrison's rule
         Different functionals may be considered 
@@ -399,11 +368,12 @@ class TightBinding(Lattice):
         
         #Assign nearest neighbor values, index 0 mean first nearest neighbor
         d_cc = self.lattice.parameters[0][1]
-        cut = self.lattice.parameters[0][2]
+        cutt = self.lattice.parameters[0][2]
         t = self.lattice.parameters[0][3]
-
+        
         rij2 = self.distance2(xj, xi)
-        if  rij2 <cut*cut:
+        
+        if  rij2 <cutt*cutt:
             return t * (d_cc/math.sqrt(rij2))**3
         else:
             if self.lattice.pbc is True:
@@ -413,7 +383,7 @@ class TightBinding(Lattice):
                     xj[1] = xj[1] -  Ly * (xj[1]-xi[1])/abs(xj[1]-xi[1])
                 
                 rij2 = self.distance2(xj, xi)
-                if  rij2 <cut*cut:
+                if  rij2 <cutt*cutt:
                     return t * (d_cc/math.sqrt(rij2))**3
 
 
