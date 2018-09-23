@@ -18,5 +18,8 @@ It is recommended to first try using the code for calculating DOS of a flat grap
 cd graphene_from_experimental_or_MD_data
 ``` 
 The Python notebook contains example how to use the package and explanations about the input parameters. 
+
+This package is still under developement. More features will be added soon.
+
 ## Authors
 Paul Hanakata
