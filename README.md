@@ -3,10 +3,10 @@
 In Greek gefyra means bridge. The main usage of this program is to use atomic configurations obtained from classical simulations results (or experimental data) to calculate  quantum mechnical (electronic) properties via tight-binding formulation. In a sense, the program 'bridges' the classical and quantum world. 
 
 ### Installing
-To donwload 
+To download 
 ```
-git clone https://github.com/phanakata/QC-gefyra.git
-cd QC-gefyra
+git clone https://github.com/phanakata/tight-binding.git
+cd tight-binding
 ```
 Try to run an example
 ```
